@@ -3,7 +3,7 @@
 // Usage: GITHUB_TOKEN=xxx node bootstrap_repo.js <repo-name> [org]
 const TOKEN = process.env.GITHUB_TOKEN;
 const repo = process.argv[2];
-const ORG = process.argv[3] || 'Value-intelligence-trust';
+const ORG = process.argv[3] || 'vitnetwork';
 if (!TOKEN || !repo) {
   console.error('Usage: GITHUB_TOKEN=xxx node bootstrap_repo.js <repo-name> [org]');
   process.exit(1);
@@ -35,3 +35,4 @@ const STANDARD_FILES = {
     else console.log(`skip ${path} (exists)`);
   }
 })();
+
