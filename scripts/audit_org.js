@@ -2,7 +2,7 @@
 // Produces a JSON health snapshot of every repo in the org.
 // Usage: GITHUB_TOKEN=xxx node audit_org.js [org] > audit.json
 const TOKEN = process.env.GITHUB_TOKEN;
-const ORG = process.argv[2] || 'Value-intelligence-trust';
+const ORG = process.argv[2] || 'vitnetwork';
 const HEADERS = { Authorization: `token ${TOKEN}`, 'User-Agent': 'vit-devops-audit', Accept: 'application/vnd.github+json' };
 
 async function get(url) {
@@ -26,3 +26,4 @@ async function get(url) {
   }
   console.log(JSON.stringify(out, null, 2));
 })();
+
