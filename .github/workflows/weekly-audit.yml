@@ -1,0 +1,35 @@
+name: Weekly Org Health Audit
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch: {}
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run org audit
+        env:
+          GITHUB_TOKEN: ${{ secrets.ORG_AUDIT_TOKEN }}
+        run: node scripts/audit_org.js Value-intelligence-trust > audit.json
+
+      - name: Generate health report
+        run: node scripts/health_report.js audit.json > HEALTH_REPORT.md
+
+      - name: Open issue in .github with the report
+        env:
+          GH_TOKEN: ${{ secrets.ORG_AUDIT_TOKEN }}
+        run: |
+          TITLE="Weekly Org Health Report — $(date +'%Y-%m-%d')"
+          export TITLE
+          export REPORT_BODY="$(cat HEALTH_REPORT.md)"
+          PAYLOAD=$(node -e "console.log(JSON.stringify({title: process.env.TITLE, body: process.env.REPORT_BODY, labels: ['infra','needs-triage']}))")
+          curl -s -X POST \
+            -H "Authorization: token $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "User-Agent: vit-weekly-audit" \
+            -d "$PAYLOAD" \
+            "https://api.github.com/repos/Value-intelligence-trust/.github/issues"
